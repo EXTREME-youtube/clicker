@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicker Game</title>
+    <style>
+             body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        #container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #clickButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #points {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Clicker Game</h1>
+    <p>Click the button to earn points!</p>
+    <button id="clickButton">Click Me!</button>
+    <p>Points: <span id="points">0</span></p>
+    <button id="sellButton">upgrade (Cost: 10 points )</button>
+    <button id="autoClickUpgrade">Auto-Clicker (Cost: 100 points)</button>
+
+    <script>
+        let points = parseInt(localStorage.getItem('points')) || 0;
+        let clickValue = 1;
+        let sellCost = 10;
+        let autoClickerCost = 100;
+        let autoClickInterval;
+        let autoClickerLevel = parseInt(localStorage.getItem('autoClickerLevel')) || 0;
+
+        const clickButton = document.getElementById('clickButton');
+        const sellButton = document.getElementById('sellButton');
+        const autoClickUpgrade = document.getElementById('autoClickUpgrade');
+        const pointsDisplay = document.getElementById('points');
+
+        // Initialize points and upgrades
+        pointsDisplay.textContent = points;
+        updateAutoClickerText();
+
+        clickButton.addEventListener('click', () => {
+            points += clickValue;
+            pointsDisplay.textContent = points;
+            saveData();
+        });
+
+        sellButton.addEventListener('click', () => {
+            if (points >= sellCost) {
+                points -= sellCost;
+                clickValue++;
+                pointsDisplay.textContent = points;
+                sellCost += 5;
+                sellButton.textContent = `Sell Clicks (Cost: ${sellCost} points )`;
+                saveData();
+            }
+        });
+
+        autoClickUpgrade.addEventListener('click', () => {
+            if (points >= autoClickerCost) {
+                points -= autoClickerCost;
+                autoClickerCost += 50;
+                pointsDisplay.textContent = points;
+
+                // Start auto-clicking every second
+                autoClickInterval = setInterval(() => {
+                    points += clickValue;
+                    pointsDisplay.textContent = points;
+                    saveData();
+                }, 1000);
+
+                // Increase auto-clicker level
+                autoClickerLevel++;
+                updateAutoClickerText();
+                saveData();
+            }
+        });
+
+        function updateAutoClickerText() {
+            autoClickUpgrade.textContent = `Auto-Clicker (Level ${autoClickerLevel}, Cost: ${autoClickerCost} points)`;
+        }
+
+        function saveData() {
+            localStorage.setItem('points', points);
+            localStorage.setItem('autoClickerLevel', autoClickerLevel);
+        }
+    </script>
+</body>
+</html> 
