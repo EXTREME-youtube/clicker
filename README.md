@@ -1,2 +1,2 @@
 hi
-http://127.0.0.1:5500/cicker.html 
+file:///C:/Users/sterl/OneDrive/Documents/New%20folder/New%20folder/clicker.html
